@@ -1,6 +1,6 @@
 services:
-  sni-proxy:
-    container_name: sni-proxy
+  dev-proxy:
+    container_name: dev-proxy
     image: nginx:alpine
     restart: always
     ports:
@@ -8,13 +8,17 @@ services:
       - "80:80"
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/certs:/etc/nginx/certs:ro
       - /dev/null:/etc/nginx/conf.d/default.conf:ro
     networks:
       - sophos-network
       - aritas-network
+      - dtpdf-network
 
 networks:
   sophos-network:
     external: true
   aritas-network:
+    external: true
+  dtpdf-network:
     external: true
