@@ -15,7 +15,7 @@ services:
       - aritas-network
       - dtpdf-network
       - fogandfrog-web-network
-      - email-signatures-network
+      - mailsign-network
 
 networks:
   sophos-network:
@@ -26,5 +26,5 @@ networks:
     external: true
   fogandfrog-web-network:
     external: true
-  email-signatures-network:
+  mailsign-network:
     external: true
