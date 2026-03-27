@@ -70,7 +70,29 @@ Then start any project normally — Traefik picks up its routes from container l
 
 ## Adding a Kubernetes project
 
-When a project runs on Docker Desktop's built-in Kubernetes, add the Kubernetes Ingress provider to Traefik and create an Ingress resource with `ingressClass: traefik-dev`. See [issue #2](https://github.com/joanfabregat/docker-dev/issues/2) for details.
+Projects running on Docker Desktop's built-in Kubernetes are discovered automatically via the Kubernetes Ingress provider. Create an Ingress resource in your project with `ingressClassName: traefik-dev`:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-project
+spec:
+  ingressClassName: traefik-dev
+  rules:
+    - host: myproject.dev.ffwip.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-service
+                port:
+                  number: 80
+```
+
+No Docker network or container labels needed — Traefik reads the K8s API directly via `config/kubeconfig`.
 
 ## Files
 
@@ -78,4 +100,5 @@ When a project runs on Docker Desktop's built-in Kubernetes, add the Kubernetes 
 docker-compose.yml        # Traefik v3 container
 config/dynamic.yaml       # TLS certificate configuration
 config/certs/             # Wildcard certificate for *.dev.ffwip.com
+config/kubeconfig         # Kubeconfig for Docker Desktop K8s (used by Traefik Ingress provider)
 ```

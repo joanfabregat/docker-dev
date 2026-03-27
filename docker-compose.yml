@@ -1,45 +1,5 @@
-services:
-  traefik:
-    image: traefik:v3
-    container_name: dev-proxy
-    restart: always
-    command:
-      # Entrypoints
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.web.http.redirections.entryPoint.to=websecure
-
-      # TLS default certificate
-      - --entrypoints.websecure.http.tls=true
-
-      # Providers
-      - --providers.docker=true
-      - --providers.docker.exposedByDefault=false
-      - --providers.file.filename=/etc/traefik/dynamic.yaml
-
-      # Dashboard
-      - --api.dashboard=true
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/dynamic.yaml:/etc/traefik/dynamic.yaml:ro
-      - ./config/certs:/certs:ro
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik-dashboard.rule=Host(`traefik.dev.ffwip.com`)
-      - traefik.http.routers.traefik-dashboard.tls=true
-      - traefik.http.routers.traefik-dashboard.service=api@internal
-    networks:
-      - sophos-network
-      - aritas-network
-      - dtpdf-network
-
 networks:
   sophos-network:
-    external: true
-  aritas-network:
     external: true
   dtpdf-network:
     external: true
