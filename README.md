@@ -14,15 +14,6 @@ Browser → https://classic.sophos.dev.ffwip.com
 
 Traefik discovers routes automatically from Docker container labels — no shared config file to edit when projects change.
 
-## Projects
-
-| Domain pattern | Upstream | Network |
-|---|---|---|
-| `*.sophos.dev.ffwip.com` | `sophos-pomerium:80` | `sophos-network` |
-| `*.aritas.dev.ffwip.com` | `aritas-si:80` / `aritas-si-encore:9000` / `aritas-si-phpmyadmin:80` | `aritas-network` |
-| `dtpdf.dev.ffwip.com` | `dtpdf-web:5173` | `dtpdf-network` |
-| `traefik.dev.ffwip.com` | Traefik dashboard | — |
-
 ## Prerequisites
 
 - Docker Desktop running
@@ -52,8 +43,30 @@ Then start any project normally — Traefik picks up its routes from container l
      - traefik.http.routers.myproject.tls=true
      - traefik.http.services.myproject.loadbalancer.server.port=8080
    ```
-2. Add your project's Docker network to `docker-compose.yml` in this repo (under `services.traefik.networks` and `networks`)
-3. Restart: `docker compose restart`
+   - `traefik.enable=true` — required since Traefik is configured with `exposedByDefault=false`
+   - `traefik.http.routers.<name>.rule` — the `Host()` match for your subdomain
+   - `traefik.http.routers.<name>.tls=true` — enables TLS (the wildcard certificate is applied automatically)
+   - `traefik.http.services.<name>.loadbalancer.server.port` — the port your container listens on
+2. Create an external Docker network in your project's `docker-compose.yml` and attach it to your service:
+   ```yaml
+   networks:
+     myproject-network:
+       external: true
+   ```
+3. Add that network to `docker-compose.yml` in this repo:
+   ```yaml
+   # under services.traefik.networks:
+   - myproject-network
+
+   # under networks:
+   myproject-network:
+     external: true
+   ```
+4. Create the network and restart:
+   ```bash
+   docker network create myproject-network
+   docker compose restart
+   ```
 
 ## Adding a Kubernetes project
 
