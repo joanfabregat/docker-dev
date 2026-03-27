@@ -1,0 +1,9 @@
+tls:
+  certificates:
+    - certFile: /certs/dev.ffwip.com.pem
+      keyFile: /certs/dev.ffwip.com-key.pem
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/dev.ffwip.com.pem
+        keyFile: /certs/dev.ffwip.com-key.pem
