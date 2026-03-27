@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CONTAINER_NAME="dev-proxy"
+CONTAINER_NAME="traefik-proxy"
 IMAGE="traefik:v3"
 NETWORKS=(sophos-network dtpdf-network)
 
